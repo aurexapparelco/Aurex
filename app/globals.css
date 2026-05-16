@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces */
+  --color-void: #000000;
+  --color-deep-teal: #02090a;
+  --color-dark-forest: #061a1c;
+  --color-forest: #102620;
+  --color-card-border: #1e2c31;
+  --color-divider: #3f3f46;
+
+  /* Gold accent scale */
+  --color-gold-100: #f8e7b0;
+  --color-gold-200: #efce7e;
+  --color-gold-400: #d4a24c;
+  --color-gold-500: #b6862f;
+  --color-gold-700: #6e4f18;
+
+  /* Text */
+  --color-fg: #ffffff;
+  --color-fg-muted: #a1a1aa;
+  --color-fg-tertiary: #71717a;
+  --color-fg-disabled: #52525b;
+
+  /* Status colours */
+  --color-status-awaiting-fg: #f8e7b0;
+  --color-status-paid-fg: #efce7e;
+  --color-status-packed-fg: #a0e6c9;
+  --color-status-shipped-fg: #9bc9ff;
+  --color-status-delivered-fg: #a1a1aa;
+  --color-status-cancelled-fg: #ff8a8a;
+  --color-status-refunded-fg: #71717a;
+
+  /* Fonts */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-body);
+    background-color: var(--color-void);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-fg);
+    font-family: var(--font-body);
+    font-weight: 450;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-card-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-700);
+}
