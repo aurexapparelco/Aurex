@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/useCart";
 import CartDrawer from "./CartDrawer";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/home", label: "Home" },
@@ -87,6 +88,7 @@ export default function Nav() {
 
             {/* Actions */}
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <Link
                 href="/account"
                 className="hidden md:flex p-2 rounded-lg transition-colors"

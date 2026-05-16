@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Surfaces */
+  /* Surfaces — dark (default) */
   --color-void: #000000;
   --color-deep-teal: #02090a;
   --color-dark-forest: #061a1c;
@@ -16,7 +16,7 @@
   --color-gold-500: #b6862f;
   --color-gold-700: #6e4f18;
 
-  /* Text */
+  /* Text — dark */
   --color-fg: #ffffff;
   --color-fg-muted: #a1a1aa;
   --color-fg-tertiary: #71717a;
@@ -35,6 +35,87 @@
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+}
+
+/* ── Status pill variables (dark default) ─────────────────────────────────── */
+:root {
+  --pill-awaiting-fg: #F8E7B0;
+  --pill-awaiting-bg: rgba(248,231,176,0.10);
+  --pill-awaiting-border: rgba(248,231,176,0.30);
+
+  --pill-paid-fg: #EFCE7E;
+  --pill-paid-bg: rgba(212,162,76,0.12);
+  --pill-paid-border: rgba(212,162,76,0.40);
+
+  --pill-packed-fg: #A0E6C9;
+  --pill-packed-bg: rgba(160,230,201,0.08);
+  --pill-packed-border: rgba(160,230,201,0.30);
+
+  --pill-shipped-fg: #9BC9FF;
+  --pill-shipped-bg: rgba(155,201,255,0.08);
+  --pill-shipped-border: rgba(155,201,255,0.30);
+
+  --pill-delivered-fg: #A1A1AA;
+  --pill-delivered-bg: transparent;
+  --pill-delivered-border: #3F3F46;
+
+  --pill-cancelled-fg: #FF8A8A;
+  --pill-cancelled-bg: rgba(255,138,138,0.08);
+  --pill-cancelled-border: rgba(255,138,138,0.30);
+
+  --pill-refunded-fg: #71717A;
+  --pill-refunded-bg: transparent;
+  --pill-refunded-border: #3F3F46;
+}
+
+/* ── Light theme overrides ────────────────────────────────────────────────── */
+html.light {
+  /* Surfaces — warm parchment/cream */
+  --color-void: #F4F1EB;
+  --color-deep-teal: #EBE7DF;
+  --color-dark-forest: #E0DAD0;
+  --color-forest: #FFFFFF;
+  --color-card-border: #C9C2B4;
+  --color-divider: #AFA89C;
+
+  /* Gold — darkened for legibility on light backgrounds */
+  --color-gold-100: #B6862F;
+  --color-gold-200: #9B6E1C;
+
+  /* Text — warm charcoal */
+  --color-fg: #1C1916;
+  --color-fg-muted: #6B6560;
+  --color-fg-tertiary: #988F85;
+  --color-fg-disabled: #BCB7AF;
+
+  /* Status pill — light overrides */
+  --pill-awaiting-fg: #8B6010;
+  --pill-awaiting-bg: rgba(139,96,16,0.10);
+  --pill-awaiting-border: rgba(139,96,16,0.30);
+
+  --pill-paid-fg: #9B6E1C;
+  --pill-paid-bg: rgba(155,110,28,0.10);
+  --pill-paid-border: rgba(155,110,28,0.35);
+
+  --pill-packed-fg: #1E7A54;
+  --pill-packed-bg: rgba(30,122,84,0.08);
+  --pill-packed-border: rgba(30,122,84,0.28);
+
+  --pill-shipped-fg: #1E5FA0;
+  --pill-shipped-bg: rgba(30,95,160,0.08);
+  --pill-shipped-border: rgba(30,95,160,0.28);
+
+  --pill-delivered-fg: #6B6560;
+  --pill-delivered-bg: transparent;
+  --pill-delivered-border: #C9C2B4;
+
+  --pill-cancelled-fg: #B83232;
+  --pill-cancelled-bg: rgba(184,50,50,0.08);
+  --pill-cancelled-border: rgba(184,50,50,0.28);
+
+  --pill-refunded-fg: #988F85;
+  --pill-refunded-bg: transparent;
+  --pill-refunded-border: #C9C2B4;
 }
 
 @layer base {
@@ -77,5 +158,10 @@
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gold-700);
+  background: var(--color-gold-500);
+}
+
+/* Light theme transition */
+html {
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
