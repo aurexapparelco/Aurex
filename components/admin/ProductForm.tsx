@@ -4,17 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ProductType } from "@/types/database.types";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 const SIZES = ["S", "M", "L", "XL", "XXL"] as const;
 const AVAILABLE_TAGS = ["Featured", "New Arrival"] as const;
 
 interface VariantState {
   _key: string;
-  id?: string;       // set on existing variants
+  id?: string;
   color: string;
   hex: string;
-  images: string;    // newline-separated URLs
-  inventory: Record<string, string>; // size → qty string
+  images: string[];
+  inventory: Record<string, string>;
 }
 
 interface InitialVariant {
@@ -86,13 +87,13 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
         id: v.id,
         color: v.color,
         hex: v.hex,
-        images: v.images.join("\n"),
+        images: v.images,
         inventory: Object.fromEntries(
           SIZES.map((s) => [s, String(v.inventory.find((i) => i.size === s)?.qty ?? 0)])
         ),
       }));
     }
-    return [{ _key: makeKey(), color: "", hex: "#000000", images: "", inventory: Object.fromEntries(SIZES.map((s) => [s, "0"])) }];
+    return [{ _key: makeKey(), color: "", hex: "#000000", images: [], inventory: Object.fromEntries(SIZES.map((s) => [s, "0"])) }];
   });
 
   // ── Removed variant IDs (for edit cleanup) ────────────────────────────────
@@ -114,7 +115,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
   function addVariant() {
     setVariants((prev) => [
       ...prev,
-      { _key: makeKey(), color: "", hex: "#000000", images: "", inventory: Object.fromEntries(SIZES.map((s) => [s, "0"])) },
+      { _key: makeKey(), color: "", hex: "#000000", images: [], inventory: Object.fromEntries(SIZES.map((s) => [s, "0"])) },
     ]);
   }
 
@@ -193,7 +194,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
         product_id: slug.trim(),
         color: v.color.trim(),
         hex: v.hex,
-        images: v.images.split("\n").map((u: string) => u.trim()).filter(Boolean),
+        images: v.images,
       };
 
       if (variantId) {
@@ -469,16 +470,13 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
                 </div>
               </div>
 
-              {/* Image URLs */}
+              {/* Images */}
               <div className="mb-4">
-                <label className={labelCls} style={labelStyle}>Image URLs (one per line)</label>
-                <textarea
-                  value={v.images}
-                  onChange={(e) => updateVariant(v._key, { images: e.target.value })}
-                  rows={2}
-                  placeholder={"https://example.com/image1.jpg\nhttps://example.com/image2.jpg"}
-                  className={inputCls}
-                  style={{ ...inputStyle, resize: "vertical", fontFamily: "var(--font-mono)", fontSize: "11px" }}
+                <ImageUpload
+                  images={v.images}
+                  onChange={(urls) => updateVariant(v._key, { images: urls })}
+                  uploadEndpoint="/api/upload/product-image"
+                  label="Images"
                 />
               </div>
 

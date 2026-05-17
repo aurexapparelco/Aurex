@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { HomeContent, HeroStat, FeatureItem, CollectionCard } from "@/lib/home-content";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 interface Props {
   initial: HomeContent;
@@ -213,19 +214,16 @@ export default function HomeContentForm({ initial }: Props) {
             </div>
           </div>
 
-          <Field label="Hero Image URL (optional)" style={lbl}>
-            <input
-              style={inp}
-              placeholder="https://…"
-              value={form.hero.imageUrl}
-              onChange={(e) => setHero("imageUrl", e.target.value)}
+          <div>
+            <ImageUpload
+              images={form.hero.imageUrl ? [form.hero.imageUrl] : []}
+              onChange={(urls) => setHero("imageUrl", urls[urls.length - 1] ?? "")}
+              uploadEndpoint="/api/upload/hero-image"
+              urlKey="desktop"
+              maxImages={1}
+              label="Hero Image (desktop · 1920×1080, mobile · 800×1000 auto-generated)"
             />
-            {form.hero.imageUrl && (
-              <p className="text-xs mt-1" style={{ color: "var(--color-fg-tertiary)" }}>
-                Image will appear on the right side of the hero on desktop.
-              </p>
-            )}
-          </Field>
+          </div>
         </div>
       </Section>
 
