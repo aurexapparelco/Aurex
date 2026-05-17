@@ -28,6 +28,7 @@ export interface Database {
           compare_at: number | null;
           fabric: string;
           gsm: number;
+          weight_grams: number;
           fit: string;
           care: string;
           model_info: string;
@@ -71,7 +72,6 @@ export interface Database {
           phone2: string;
           address: string;
           city: string;
-          zone: "Colombo" | "Suburbs" | "Other Districts";
           postal: string;
           delivery_note: string | null;
           shipping_method: "standard" | "express";
@@ -122,6 +122,29 @@ export interface Database {
         };
         Insert: Database["public"]["Tables"]["staff"]["Row"];
         Update: Partial<Database["public"]["Tables"]["staff"]["Row"]>;
+      };
+      courier_cities: {
+        Row: {
+          id: number;
+          name: string;
+          charge_first_kg: number;
+          charge_per_additional_kg: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["courier_cities"]["Row"], "id" | "created_at">;
+        Update: Partial<Database["public"]["Tables"]["courier_cities"]["Row"]>;
+      };
+      home_content: {
+        Row: {
+          id: number;
+          hero: Json;
+          feature_strip: Json;
+          collection_cards: Json;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["home_content"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["home_content"]["Row"]>;
       };
       settings: {
         Row: {

@@ -151,7 +151,6 @@ export default async function AdminOrderDetailPage({ params }: Props) {
             <div className="px-5 py-4 space-y-2">
               <DetailRow label="Address" value={order.address} />
               <DetailRow label="City" value={order.city} />
-              <DetailRow label="Zone" value={order.zone} />
               {order.postal && <DetailRow label="Postal" value={order.postal} mono />}
             </div>
           </Card>

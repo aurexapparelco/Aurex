@@ -1,20 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <button
       onClick={toggle}
-      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label="Toggle theme"
       className="flex p-2 rounded-lg transition-colors"
       style={{ color: "var(--color-fg-muted)" }}
       onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-fg)")}
       onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-fg-muted)")}
     >
-      {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+      {/* Render placeholder until mounted to avoid server/client icon mismatch */}
+      {mounted ? (theme === "dark" ? <SunIcon /> : <MoonIcon />) : <SunIcon />}
     </button>
   );
 }

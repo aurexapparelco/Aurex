@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Anti-FOUC: apply saved theme class before first paint */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('aurex_theme');if(t!=='dark')document.documentElement.classList.add('light');}catch(e){}})();` }} />

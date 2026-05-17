@@ -6,9 +6,8 @@ import { useCart } from "@/hooks/useCart";
 import { fmtLKR, generateOrderNumber } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { clearCart } from "@/lib/cart";
-import type { BankSettings, ShippingSettings } from "@/lib/settings";
-
-type Zone = "Colombo" | "Suburbs" | "Other Districts";
+import type { BankSettings } from "@/lib/settings";
+import type { CourierCity } from "@/lib/courier";
 
 // Sri Lankan phone: 10 digits starting with 0, or +94 followed by 9 digits
 function isValidLKPhone(raw: string): boolean {
@@ -28,7 +27,7 @@ interface FormState {
   email: string;
   phone: string;
   phone2: string;
-  shipping: AddressFields & { zone: Zone; deliveryNote: string };
+  shipping: AddressFields & { deliveryNote: string };
   billingSameAsShipping: boolean;
   billing: AddressFields;
 }
@@ -37,7 +36,9 @@ interface Props {
   userEmail: string;
   userId: string | null;
   bank: BankSettings;
-  shipping: ShippingSettings;
+  freeShippingThreshold: number;
+  cities: CourierCity[];
+  productWeights: Record<string, number>;
 }
 
 interface PlacedOrder {
@@ -59,7 +60,9 @@ export default function CheckoutClient({
   userEmail,
   userId,
   bank,
-  shipping,
+  freeShippingThreshold,
+  cities,
+  productWeights,
 }: Props) {
   const router = useRouter();
   const { items, subtotal } = useCart();
@@ -73,7 +76,6 @@ export default function CheckoutClient({
       lastName: "",
       address: "",
       city: "",
-      zone: "Colombo",
       postal: "",
       deliveryNote: "",
     },
@@ -86,10 +88,16 @@ export default function CheckoutClient({
   const [error, setError] = useState("");
   const [placedOrder, setPlacedOrder] = useState<PlacedOrder | null>(null);
 
-  const shippingFee =
-    subtotal >= shipping.freeThreshold
-      ? 0
-      : shipping.zones[form.shipping.zone].fee;
+  const selectedCity = cities.find((c) => c.name === form.shipping.city);
+  const totalWeightGrams = items.reduce(
+    (sum, item) => sum + item.qty * (productWeights[item.productId] ?? 275),
+    0
+  );
+  const additionalKg = Math.ceil(Math.max(0, totalWeightGrams / 1000 - 1));
+  const courierFee = selectedCity
+    ? selectedCity.charge_first_kg + additionalKg * selectedCity.charge_per_additional_kg
+    : 0;
+  const shippingFee = subtotal >= freeShippingThreshold ? 0 : courierFee;
   const total = subtotal + shippingFee;
 
   function setShippingField(field: keyof typeof form.shipping, value: string) {
@@ -150,7 +158,6 @@ export default function CheckoutClient({
         phone2: form.phone2.replace(/[\s\-()]/g, ""),
         address: form.shipping.address,
         city: form.shipping.city,
-        zone: form.shipping.zone,
         postal: form.shipping.postal,
         delivery_note: form.shipping.deliveryNote || null,
         shipping_method: "standard",
@@ -199,7 +206,7 @@ export default function CheckoutClient({
     setPlacedOrder({
       orderNumber: num,
       total,
-      shippingAddress: `${form.shipping.firstName} ${form.shipping.lastName}, ${form.shipping.address}, ${form.shipping.city}${form.shipping.postal ? " " + form.shipping.postal : ""}, ${form.shipping.zone}`,
+      shippingAddress: `${form.shipping.firstName} ${form.shipping.lastName}, ${form.shipping.address}, ${form.shipping.city}${form.shipping.postal ? " " + form.shipping.postal : ""}`,
       billingAddress: hasBilling
         ? `${form.billing.firstName} ${form.billing.lastName}, ${form.billing.address}, ${form.billing.city}${form.billing.postal ? " " + form.billing.postal : ""}`
         : null,
@@ -589,14 +596,25 @@ export default function CheckoutClient({
                     style={inputStyle}
                   />
                   <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
+                    <select
                       required
-                      placeholder="City"
                       value={form.shipping.city}
                       onChange={(e) => setShippingField("city", e.target.value)}
-                      style={inputStyle}
-                    />
+                      style={{ ...inputStyle, cursor: "pointer" }}
+                    >
+                      <option value="" style={{ backgroundColor: "var(--color-dark-forest)" }}>
+                        Select city…
+                      </option>
+                      {cities.map((c) => (
+                        <option
+                          key={c.id}
+                          value={c.name}
+                          style={{ backgroundColor: "var(--color-dark-forest)" }}
+                        >
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
                     <input
                       type="text"
                       placeholder="Postal code"
@@ -607,24 +625,6 @@ export default function CheckoutClient({
                       style={inputStyle}
                     />
                   </div>
-                  <select
-                    required
-                    value={form.shipping.zone}
-                    onChange={(e) =>
-                      setShippingField("zone", e.target.value)
-                    }
-                    style={{ ...inputStyle, cursor: "pointer" }}
-                  >
-                    {(Object.keys(shipping.zones) as Zone[]).map((z) => (
-                      <option
-                        key={z}
-                        value={z}
-                        style={{ backgroundColor: "var(--color-dark-forest)" }}
-                      >
-                        {z}
-                      </option>
-                    ))}
-                  </select>
                   <textarea
                     placeholder="Delivery notes (optional)"
                     value={form.shipping.deliveryNote}

@@ -49,6 +49,7 @@ export default async function EditProductPage({ params }: Props) {
     compare_at: raw.compare_at ?? null,
     fabric: raw.fabric ?? "",
     gsm: raw.gsm ?? 200,
+    weight_grams: raw.weight_grams ?? 275,
     fit: raw.fit ?? "",
     care: raw.care ?? "",
     model_info: raw.model_info ?? "",

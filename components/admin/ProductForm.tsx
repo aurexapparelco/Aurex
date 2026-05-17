@@ -36,6 +36,7 @@ interface Props {
     compare_at: number | null;
     fabric: string;
     gsm: number;
+    weight_grams: number;
     fit: string;
     care: string;
     model_info: string;
@@ -68,6 +69,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
   const [compareAt, setCompareAt] = useState(String(initialData?.compare_at ?? ""));
   const [fabric, setFabric] = useState(initialData?.fabric ?? "");
   const [gsm, setGsm] = useState(String(initialData?.gsm ?? "200"));
+  const [weightGrams, setWeightGrams] = useState(String(initialData?.weight_grams ?? "275"));
   const [fit, setFit] = useState(initialData?.fit ?? "");
   const [care, setCare] = useState(initialData?.care ?? "");
   const [modelInfo, setModelInfo] = useState(initialData?.model_info ?? "");
@@ -157,6 +159,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
       compare_at: compareAt ? Number(compareAt) : null,
       fabric: fabric.trim(),
       gsm: Number(gsm) || 200,
+      weight_grams: Number(weightGrams) || 275,
       fit: fit.trim(),
       care: care.trim(),
       model_info: modelInfo.trim(),
@@ -361,6 +364,10 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
           <div>
             <label className={labelCls} style={labelStyle}>GSM</label>
             <input type="number" value={gsm} onChange={(e) => setGsm(e.target.value)} placeholder="200" min="1" className={inputCls} style={{ ...inputStyle, fontFamily: "var(--font-mono)" }} />
+          </div>
+          <div>
+            <label className={labelCls} style={labelStyle}>Item Weight (grams)</label>
+            <input type="number" value={weightGrams} onChange={(e) => setWeightGrams(e.target.value)} placeholder="275" min="1" className={inputCls} style={{ ...inputStyle, fontFamily: "var(--font-mono)" }} />
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Fit</label>

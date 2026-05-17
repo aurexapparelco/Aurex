@@ -10,7 +10,8 @@ export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
 
   // Guard admin routes
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+  const adminPublicPaths = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+  if (pathname.startsWith("/admin") && !adminPublicPaths.includes(pathname)) {
     const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,

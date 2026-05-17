@@ -16,4 +16,4 @@ export type ProductWithVariantColors = Product & {
   product_variants: Pick<ProductVariant, "id" | "color" | "hex">[];
 };
 
-export type OrderRow = Pick<Order, "id" | "order_number" | "status" | "total" | "created_at" | "first_name" | "last_name" | "email" | "city" | "zone">;
+export type OrderRow = Pick<Order, "id" | "order_number" | "status" | "total" | "created_at" | "first_name" | "last_name" | "email" | "city">;

@@ -91,20 +91,6 @@ export default function Footer() {
               ))}
             </ul>
 
-            <div
-              className="mt-6 p-3 rounded text-xs"
-              style={{
-                backgroundColor: "var(--color-forest)",
-                border: "1px solid var(--color-card-border)",
-                color: "var(--color-fg-muted)",
-              }}
-            >
-              <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "var(--color-gold-200)" }}>
-                Bank Transfer
-              </p>
-              <p>Commercial Bank of Ceylon</p>
-              <p className="mt-0.5">Auréx Atelier (Pvt) Ltd</p>
-            </div>
           </div>
         </div>
 

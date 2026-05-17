@@ -74,7 +74,7 @@ export default async function AdminOrdersPage() {
                 borderBottom: "1px solid var(--color-card-border)",
               }}
             >
-              {["Order", "Customer", "City / Zone", "Date", "Total", "Status", ""].map(
+              {["Order", "Customer", "City", "Date", "Total", "Status", ""].map(
                 (h) => (
                   <th
                     key={h}
@@ -121,14 +121,8 @@ export default async function AdminOrdersPage() {
                     {order.email}
                   </div>
                 </td>
-                <td className="px-5 py-3">
-                  <div style={{ color: "var(--color-fg)" }}>{order.city}</div>
-                  <div
-                    className="text-xs"
-                    style={{ color: "var(--color-fg-tertiary)" }}
-                  >
-                    {order.zone}
-                  </div>
+                <td className="px-5 py-3" style={{ color: "var(--color-fg)" }}>
+                  {order.city}
                 </td>
                 <td
                   className="px-5 py-3"

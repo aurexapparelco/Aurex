@@ -133,7 +133,6 @@ function OrderCard({ order, bankDetails }: { order: FullOrder; bankDetails: Bank
     `${order.first_name} ${order.last_name}`,
     order.address,
     order.city + (order.postal ? ` ${order.postal}` : ""),
-    order.zone,
   ].join(", ");
 
   const billingAddr = hasBilling

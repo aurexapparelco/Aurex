@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { getHomeContent } from "@/lib/home-content";
 import ProductCard from "@/components/storefront/ProductCard";
 import type { Metadata } from "next";
 
@@ -34,183 +36,210 @@ async function getNewArrivals() {
 }
 
 export default async function HomePage() {
-  const [featured, newArrivals] = await Promise.all([
+  const [featured, newArrivals, homeContent] = await Promise.all([
     getFeaturedProducts(),
     getNewArrivals(),
+    getHomeContent(),
   ]);
+
+  const { hero, featureStrip, collectionCards } = homeContent;
 
   return (
     <>
       {/* Hero */}
-      <section
-        className="relative min-h-[90vh] flex items-center overflow-hidden"
-        style={{ backgroundColor: "var(--color-void)" }}
-      >
-        {/* Background gradient */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 60% at 70% 50%, rgba(16,38,32,0.8) 0%, transparent 70%)",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 40% 40% at 20% 80%, rgba(110,79,24,0.15) 0%, transparent 60%)",
-          }}
-        />
+      {hero.visible && (
+        <section
+          className="relative min-h-[90vh] flex items-center overflow-hidden"
+          style={{ backgroundColor: "var(--color-void)" }}
+        >
+          {/* Background gradient */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at 70% 50%, rgba(16,38,32,0.8) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 40% 40% at 20% 80%, rgba(110,79,24,0.15) 0%, transparent 60%)",
+            }}
+          />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="max-w-xl">
-            {/* Eyebrow */}
-            <p
-              className="text-xs tracking-[0.22em] uppercase mb-6"
-              style={{ color: "var(--color-gold-200)", fontFamily: "var(--font-body)" }}
-            >
-              Precision Crafted
-            </p>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+            <div className={`flex items-center gap-16 ${hero.imageUrl ? "justify-between" : ""}`}>
+              <div className="max-w-xl">
+                {/* Eyebrow */}
+                {hero.eyebrow && (
+                  <p
+                    className="text-xs tracking-[0.22em] uppercase mb-6"
+                    style={{ color: "var(--color-gold-200)", fontFamily: "var(--font-body)" }}
+                  >
+                    {hero.eyebrow}
+                  </p>
+                )}
 
-            {/* Headline */}
-            <h1
-              className="text-5xl sm:text-6xl lg:text-7xl leading-[1.05] mb-6"
+                {/* Headline */}
+                <h1
+                  className="text-5xl sm:text-6xl lg:text-7xl leading-[1.05] mb-6"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 300,
+                    color: "var(--color-fg)",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {hero.headline}{" "}
+                  {hero.headlineAccent && (
+                    <em
+                      className="not-italic"
+                      style={{ color: "var(--color-gold-400)" }}
+                    >
+                      {hero.headlineAccent}
+                    </em>
+                  )}
+                </h1>
+
+                {hero.subtext && (
+                  <p
+                    className="text-base sm:text-lg leading-relaxed mb-10 max-w-sm"
+                    style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)", fontWeight: 400 }}
+                  >
+                    {hero.subtext}
+                  </p>
+                )}
+
+                <div className="flex flex-wrap gap-4">
+                  {hero.primaryCta.label && (
+                    <Link
+                      href={hero.primaryCta.href}
+                      className="inline-flex items-center gap-2 px-8 py-3.5 rounded text-sm font-medium tracking-wide transition-all"
+                      style={{
+                        backgroundColor: "var(--color-gold-400)",
+                        color: "var(--color-void)",
+                        fontFamily: "var(--font-body)",
+                      }}
+                    >
+                      {hero.primaryCta.label}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  )}
+                  {hero.secondaryCta.label && (
+                    <Link
+                      href={hero.secondaryCta.href}
+                      className="inline-flex items-center gap-2 px-8 py-3.5 rounded text-sm font-medium tracking-wide border transition-colors"
+                      style={{
+                        borderColor: "var(--color-card-border)",
+                        color: "var(--color-fg-muted)",
+                        fontFamily: "var(--font-body)",
+                      }}
+                    >
+                      {hero.secondaryCta.label}
+                    </Link>
+                  )}
+                </div>
+
+                {/* Stats */}
+                {hero.stats.length > 0 && (
+                  <div className="flex gap-8 mt-14">
+                    {hero.stats.map(({ value, unit, label }) => (
+                      <div key={label}>
+                        <div className="flex items-baseline gap-1">
+                          <span
+                            className="text-2xl"
+                            style={{ fontFamily: "var(--font-mono)", color: "var(--color-gold-400)" }}
+                          >
+                            {value}
+                          </span>
+                          <span
+                            className="text-xs"
+                            style={{ color: "var(--color-gold-700)", fontFamily: "var(--font-mono)" }}
+                          >
+                            {unit}
+                          </span>
+                        </div>
+                        <p
+                          className="text-xs mt-0.5"
+                          style={{ color: "var(--color-fg-tertiary)", fontFamily: "var(--font-body)" }}
+                        >
+                          {label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Hero image */}
+              {hero.imageUrl && (
+                <div className="hidden lg:block shrink-0">
+                  <Image
+                    src={hero.imageUrl}
+                    alt="Hero"
+                    width={480}
+                    height={560}
+                    className="object-cover rounded-sm"
+                    style={{ maxHeight: "560px", width: "auto" }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Decorative vertical text */}
+          {!hero.imageUrl && (
+            <div
+              className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block"
               style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 300,
-                color: "var(--color-fg)",
-                letterSpacing: "-0.02em",
+                writingMode: "vertical-rl",
+                textOrientation: "mixed",
+                color: "var(--color-fg-disabled)",
+                fontSize: "11px",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-body)",
               }}
             >
-              Essentials,{" "}
-              <em
-                className="not-italic"
-                style={{ color: "var(--color-gold-400)" }}
-              >
-                Elevated.
-              </em>
-            </h1>
-
-            <p
-              className="text-base sm:text-lg leading-relaxed mb-10 max-w-sm"
-              style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)", fontWeight: 400 }}
-            >
-              Premium-grade tees engineered for Sri Lanka&apos;s climate.
-              200GSM supima cotton, tailored silhouettes.
-            </p>
-
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded text-sm font-medium tracking-wide transition-all"
-                style={{
-                  backgroundColor: "var(--color-gold-400)",
-                  color: "var(--color-void)",
-                  fontFamily: "var(--font-body)",
-                }}
-              >
-                Shop Collection
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                href="/shop?type=Premium"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded text-sm font-medium tracking-wide border transition-colors"
-                style={{
-                  borderColor: "var(--color-card-border)",
-                  color: "var(--color-fg-muted)",
-                  fontFamily: "var(--font-body)",
-                }}
-              >
-                Premium Collection
-              </Link>
+              Auréx Atelier · SS 2025
             </div>
+          )}
+        </section>
+      )}
 
-            {/* Stats */}
-            <div className="flex gap-8 mt-14">
-              {[
-                { value: "200", unit: "GSM", label: "Premium Cotton" },
-                { value: "5", unit: "Colors", label: "Per Drop" },
-                { value: "100%", unit: "LK", label: "Made in Sri Lanka" },
-              ].map(({ value, unit, label }) => (
-                <div key={label}>
-                  <div className="flex items-baseline gap-1">
-                    <span
-                      className="text-2xl"
-                      style={{ fontFamily: "var(--font-mono)", color: "var(--color-gold-400)" }}
-                    >
-                      {value}
-                    </span>
-                    <span
-                      className="text-xs"
-                      style={{ color: "var(--color-gold-700)", fontFamily: "var(--font-mono)" }}
-                    >
-                      {unit}
-                    </span>
-                  </div>
-                  <p
-                    className="text-xs mt-0.5"
-                    style={{ color: "var(--color-fg-tertiary)", fontFamily: "var(--font-body)" }}
+      {/* Features strip */}
+      {featureStrip.visible && (
+        <section
+          style={{
+            backgroundColor: "var(--color-deep-teal)",
+            borderTop: "1px solid var(--color-card-border)",
+            borderBottom: "1px solid var(--color-card-border)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              {featureStrip.features.map(({ icon, label }) => (
+                <div key={label} className="flex flex-col items-center gap-2">
+                  <span
+                    style={{ color: "var(--color-gold-400)", fontSize: "16px" }}
+                  >
+                    {icon}
+                  </span>
+                  <span
+                    className="text-xs tracking-wide"
+                    style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
                   >
                     {label}
-                  </p>
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Decorative vertical text */}
-        <div
-          className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block"
-          style={{
-            writingMode: "vertical-rl",
-            textOrientation: "mixed",
-            color: "var(--color-fg-disabled)",
-            fontSize: "11px",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            fontFamily: "var(--font-body)",
-          }}
-        >
-          Auréx Atelier · SS 2025
-        </div>
-      </section>
-
-      {/* Features strip */}
-      <section
-        style={{
-          backgroundColor: "var(--color-deep-teal)",
-          borderTop: "1px solid var(--color-card-border)",
-          borderBottom: "1px solid var(--color-card-border)",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {[
-              { icon: "✦", label: "Premium 200GSM Supima" },
-              { icon: "◈", label: "Structured Tailored Fit" },
-              { icon: "⊹", label: "Free Returns · 30 Days" },
-              { icon: "◻", label: "Made in Sri Lanka" },
-            ].map(({ icon, label }) => (
-              <div key={label} className="flex flex-col items-center gap-2">
-                <span
-                  style={{ color: "var(--color-gold-400)", fontSize: "16px" }}
-                >
-                  {icon}
-                </span>
-                <span
-                  className="text-xs tracking-wide"
-                  style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
-                >
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Featured Products */}
       {featured.length > 0 && (
@@ -251,99 +280,67 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Design Types Section */}
-      <section
-        className="py-20"
-        style={{ backgroundColor: "var(--color-dark-forest)" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Plain */}
-            <Link
-              href="/shop?type=Plain"
-              className="group relative overflow-hidden rounded-sm p-10 flex flex-col justify-end min-h-[320px] transition-all"
-              style={{
-                backgroundColor: "var(--color-forest)",
-                border: "1px solid var(--color-card-border)",
-              }}
-            >
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at center, rgba(212,162,76,0.06) 0%, transparent 70%)",
-                }}
-              />
-              <p
-                className="text-xs tracking-[0.2em] uppercase mb-3"
-                style={{ color: "var(--color-gold-200)" }}
-              >
-                Collection 01
-              </p>
-              <h3
-                className="text-3xl mb-3"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
-              >
-                Plain Essentials
-              </h3>
-              <p
-                className="text-sm mb-6"
-                style={{ color: "var(--color-fg-muted)" }}
-              >
-                Refined basics in signature colours. The foundation of every wardrobe.
-              </p>
-              <span
-                className="inline-flex items-center gap-1 text-sm"
-                style={{ color: "var(--color-gold-400)" }}
-              >
-                Explore →
-              </span>
-            </Link>
-
-            {/* Premium */}
-            <Link
-              href="/shop?type=Premium"
-              className="group relative overflow-hidden rounded-sm p-10 flex flex-col justify-end min-h-[320px] transition-all"
-              style={{
-                backgroundColor: "var(--color-forest)",
-                border: "1px solid var(--color-card-border)",
-              }}
-            >
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at center, rgba(212,162,76,0.06) 0%, transparent 70%)",
-                }}
-              />
-              <p
-                className="text-xs tracking-[0.2em] uppercase mb-3"
-                style={{ color: "var(--color-gold-200)" }}
-              >
-                Collection 02
-              </p>
-              <h3
-                className="text-3xl mb-3"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
-              >
-                Premium Collection
-              </h3>
-              <p
-                className="text-sm mb-6"
-                style={{ color: "var(--color-fg-muted)" }}
-              >
-                Elevated fabrication with structured details. Crafted for distinction.
-              </p>
-              <span
-                className="inline-flex items-center gap-1 text-sm"
-                style={{ color: "var(--color-gold-400)" }}
-              >
-                Explore →
-              </span>
-            </Link>
+      {/* Collection Cards */}
+      {collectionCards.visible && collectionCards.cards.length > 0 && (
+        <section
+          className="py-20"
+          style={{ backgroundColor: "var(--color-dark-forest)" }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-6">
+              {collectionCards.cards.map((card) => (
+                <Link
+                  key={card.href}
+                  href={card.href}
+                  className="group relative overflow-hidden rounded-sm p-10 flex flex-col justify-end min-h-80 transition-all"
+                  style={{
+                    backgroundColor: "var(--color-forest)",
+                    border: "1px solid var(--color-card-border)",
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse at center, rgba(212,162,76,0.06) 0%, transparent 70%)",
+                    }}
+                  />
+                  {card.overline && (
+                    <p
+                      className="text-xs tracking-[0.2em] uppercase mb-3"
+                      style={{ color: "var(--color-gold-200)" }}
+                    >
+                      {card.overline}
+                    </p>
+                  )}
+                  <h3
+                    className="text-3xl mb-3"
+                    style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
+                  >
+                    {card.heading}
+                  </h3>
+                  {card.description && (
+                    <p
+                      className="text-sm mb-6"
+                      style={{ color: "var(--color-fg-muted)" }}
+                    >
+                      {card.description}
+                    </p>
+                  )}
+                  {card.cta && (
+                    <span
+                      className="inline-flex items-center gap-1 text-sm"
+                      style={{ color: "var(--color-gold-400)" }}
+                    >
+                      {card.cta}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* New Arrivals */}
       {newArrivals.length > 0 && (

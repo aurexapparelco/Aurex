@@ -19,6 +19,27 @@ const NAV_ITEMS = [
     ),
   },
   {
+    href: "/admin/home",
+    label: "Home Content",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        <polyline points="9,22 9,12 15,12 15,22" />
+      </svg>
+    ),
+  },
+  {
+    href: "/admin/courier",
+    label: "Courier Cities",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/orders",
     label: "Orders",
     icon: (
@@ -154,6 +175,7 @@ export default function AdminNav() {
       >
         <button
           onClick={handleSignOut}
+          suppressHydrationWarning
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm transition-colors"
           style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
         >
