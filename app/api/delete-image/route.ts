@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   const key = body.url.slice(base.length + 1);
   const prefix = key.replace(/\/[^/]+\.webp$/, "");
 
-  const sizes = prefix === "hero" ? ["mobile", "desktop"] : ["sm", "md", "lg"];
+  const sizes = key.startsWith("hero/") ? ["mobile", "desktop"] : ["sm", "md", "lg"];
   await Promise.all(sizes.map((s) => s3Delete(`${prefix}/${s}.webp`)));
 
   return NextResponse.json({ ok: true });

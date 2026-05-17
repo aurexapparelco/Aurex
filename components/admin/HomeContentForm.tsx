@@ -221,7 +221,7 @@ export default function HomeContentForm({ initial }: Props) {
               uploadEndpoint="/api/upload/hero-image"
               urlKey="desktop"
               maxImages={1}
-              label="Hero Image (desktop · 1920×1080, mobile · 800×1000 auto-generated)"
+              label="Hero Image (desktop · 1080×1350, mobile · 640×800 auto-generated)"
             />
           </div>
         </div>

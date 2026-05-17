@@ -4,8 +4,8 @@ import { s3Put } from "@/lib/s3";
 import { createClient } from "@/lib/supabase/server";
 
 const SIZES = {
-  mobile: { width: 800, height: 1000 },
-  desktop: { width: 1920, height: 1080 },
+  mobile: { width: 640, height: 800 },
+  desktop: { width: 1080, height: 1350 },
 } as const;
 
 export async function POST(req: NextRequest) {
@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  const id = crypto.randomUUID();
   const urls: Record<string, string> = {};
 
   for (const [size, dims] of Object.entries(SIZES)) {
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
       .resize(dims.width, dims.height, { fit: "cover", position: "center" })
       .webp({ quality: 88 })
       .toBuffer();
-    urls[size] = await s3Put(`hero/${size}.webp`, processed);
+    urls[size] = await s3Put(`hero/${id}/${size}.webp`, processed);
   }
 
   return NextResponse.json({ urls });
