@@ -57,6 +57,7 @@ export default async function EditProductPage({ params }: Props) {
     origin: raw.origin ?? "Made in Sri Lanka",
     description: raw.description ?? "",
     tags: raw.tags ?? [],
+    listed: raw.listed ?? true,
     product_variants: (raw.product_variants ?? []).map((v: any) => ({
       id: v.id,
       color: v.color,

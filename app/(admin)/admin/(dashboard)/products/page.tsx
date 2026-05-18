@@ -77,7 +77,7 @@ export default async function AdminProductsPage() {
                 borderBottom: "1px solid var(--color-card-border)",
               }}
             >
-              {["Name", "Type", "Price", "Variants", "Tags", ""].map((h) => (
+              {["Name", "Type", "Price", "Variants", "Tags", "Status", ""].map((h) => (
                 <th
                   key={h}
                   className="text-left px-5 py-3 text-xs tracking-[0.12em] uppercase font-normal"
@@ -98,6 +98,8 @@ export default async function AdminProductsPage() {
                       ? "var(--color-forest)"
                       : "var(--color-dark-forest)",
                   borderBottom: "1px solid var(--color-card-border)",
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  opacity: (p as any).listed === false ? 0.55 : 1,
                 }}
               >
                 <td className="px-5 py-3">
@@ -184,6 +186,32 @@ export default async function AdminProductsPage() {
                       </span>
                     ))}
                   </div>
+                </td>
+                <td className="px-5 py-3">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {(p as any).listed === false ? (
+                    <span
+                      className="text-xs px-2 py-0.5 rounded"
+                      style={{
+                        backgroundColor: "rgba(255,138,138,0.08)",
+                        color: "#ff8a8a",
+                        border: "1px solid rgba(255,138,138,0.25)",
+                      }}
+                    >
+                      Unlisted
+                    </span>
+                  ) : (
+                    <span
+                      className="text-xs px-2 py-0.5 rounded"
+                      style={{
+                        backgroundColor: "rgba(160,230,201,0.06)",
+                        color: "#A0E6C9",
+                        border: "1px solid rgba(160,230,201,0.2)",
+                      }}
+                    >
+                      Listed
+                    </span>
+                  )}
                 </td>
                 <td className="px-5 py-3 text-right">
                   <Link

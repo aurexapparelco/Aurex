@@ -36,6 +36,7 @@ export interface Database {
           origin: string;
           description: string;
           tags: string[];
+          listed: boolean;
         };
         Insert: Omit<Database["public"]["Tables"]["products"]["Row"], never>;
         Update: Partial<Database["public"]["Tables"]["products"]["Row"]>;

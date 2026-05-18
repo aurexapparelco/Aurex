@@ -45,6 +45,7 @@ interface Props {
     origin: string;
     description: string;
     tags: string[];
+    listed: boolean;
     product_variants: InitialVariant[];
   };
 }
@@ -78,6 +79,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
   const [origin, setOrigin] = useState(initialData?.origin ?? "Made in Sri Lanka");
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [tags, setTags] = useState<string[]>(initialData?.tags ?? []);
+  const [listed, setListed] = useState(initialData?.listed ?? true);
 
   // ── Variants ──────────────────────────────────────────────────────────────
   const [variants, setVariants] = useState<VariantState[]>(() => {
@@ -168,6 +170,7 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
       origin: origin.trim() || "Made in Sri Lanka",
       description: description.trim(),
       tags,
+      listed,
     };
 
     if (isEdit) {
@@ -339,6 +342,50 @@ export default function ProductForm({ mode, productTypes, initialData }: Props) 
                 </label>
               ))}
             </div>
+          </div>
+
+          {/* Listed toggle */}
+          <div className="col-span-2">
+            <label className={labelCls} style={labelStyle}>Storefront Visibility</label>
+            <button
+              type="button"
+              onClick={() => setListed((v) => !v)}
+              className="flex items-center gap-3 px-4 py-3 rounded-sm w-full text-left transition-colors"
+              style={{
+                backgroundColor: listed ? "rgba(160,230,201,0.06)" : "rgba(255,138,138,0.06)",
+                border: `1px solid ${listed ? "rgba(160,230,201,0.25)" : "rgba(255,138,138,0.25)"}`,
+              }}
+            >
+              {/* pill toggle */}
+              <span
+                className="relative inline-flex shrink-0"
+                style={{ width: 36, height: 20 }}
+              >
+                <span
+                  className="block rounded-full transition-colors duration-200"
+                  style={{
+                    width: 36, height: 20,
+                    backgroundColor: listed ? "var(--color-gold-400)" : "var(--color-fg-disabled)",
+                  }}
+                />
+                <span
+                  className="absolute top-0.5 rounded-full transition-all duration-200"
+                  style={{
+                    width: 16, height: 16,
+                    backgroundColor: "#fff",
+                    left: listed ? 18 : 2,
+                  }}
+                />
+              </span>
+              <span>
+                <span className="text-sm font-medium" style={{ color: listed ? "#A0E6C9" : "#ff8a8a" }}>
+                  {listed ? "Listed" : "Unlisted"}
+                </span>
+                <span className="text-xs ml-2" style={{ color: "var(--color-fg-tertiary)" }}>
+                  {listed ? "Visible to customers in the storefront" : "Hidden from storefront — only staff can see this product"}
+                </span>
+              </span>
+            </button>
           </div>
         </div>
       </section>
