@@ -11,10 +11,10 @@ const SHOP_LINKS = [
 
 const HELP_LINKS = [
   { href: "/contact", label: "Contact" },
+  { href: "/returns", label: "Return Policy" },
   { href: "/terms-and-conditions", label: "Terms & Conditions" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/delivery-policy", label: "Delivery Policy" },
-  { href: "/track-order", label: "Order Tracking" },
 ];
 
 const ABOUT_LINKS = [
@@ -93,6 +93,15 @@ export default async function Footer() {
               {/* Col 1 — Brand */}
               <div className="md:col-span-2 lg:col-span-1 border-b md:border-b-0 pb-8 md:pb-0" style={{ borderColor: "var(--color-card-border)" }}>
                 <FooterLogo tagline={footer.brandTagline} />
+
+                <p
+                  className="text-xs leading-relaxed mt-4 max-w-55"
+                  style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
+                >
+                  Premium Polos &amp; Menswear in Sri Lanka 🇱🇰<br />
+                  Minimal plain polos, signature embroidered styles &amp; everyday essentials.<br />
+                  Comfortable, modern &amp; made for confidence.
+                </p>
 
                 {socialLinks.length > 0 && (
                   <div className="flex gap-2 mt-6">

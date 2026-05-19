@@ -119,7 +119,7 @@ export function getDefaults(): AppSettings {
       socialFacebook: "",
       socialInstagram: "",
       socialTiktok: "",
-      whatsappNumber: "",
+      whatsappNumber: "94717660101",
       whatsappPrefill: "Hi Aurex! I need some help.",
       businessOpenDay: "Mon",
       businessCloseDay: "Fri",
