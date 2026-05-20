@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSettings } from "@/lib/settings";
 import { fmtLKR } from "@/lib/constants";
 
@@ -7,14 +8,16 @@ export const metadata: Metadata = {
   description: "Auréx delivery zones, shipping fees, and estimated delivery times.",
 };
 
+const WA_URL = `https://wa.me/94717660101?text=${encodeURIComponent("Hi Aurex! I have a question about my delivery.")}`;
+
 export default async function DeliveryPolicyPage() {
   const settings = await getSettings();
   const { zones, freeThreshold } = settings.shipping;
 
   const zoneRows = [
-    { name: "Colombo", ...zones.Colombo },
-    { name: "Suburbs", ...zones.Suburbs },
-    { name: "Other Districts", ...zones["Other Districts"] },
+    { name: "Colombo", days: zones.Colombo.days },
+    { name: "Colombo Suburbs", days: zones.Suburbs.days },
+    { name: "Other Districts", days: zones["Other Districts"].days },
   ];
 
   return (
@@ -28,7 +31,7 @@ export default async function DeliveryPolicyPage() {
             className="text-xs tracking-[0.22em] uppercase mb-4"
             style={{ color: "var(--color-gold-200)", fontFamily: "var(--font-body)" }}
           >
-            Shipping
+            Legal
           </p>
           <h1
             className="text-4xl sm:text-5xl"
@@ -56,8 +59,7 @@ export default async function DeliveryPolicyPage() {
                 <thead>
                   <tr style={{ backgroundColor: "var(--color-dark-forest)" }}>
                     <th className="text-left px-4 py-3 text-xs uppercase tracking-[0.12em]" style={{ color: "var(--color-fg-tertiary)" }}>Zone</th>
-                    <th className="text-left px-4 py-3 text-xs uppercase tracking-[0.12em]" style={{ color: "var(--color-fg-tertiary)" }}>Delivery Days</th>
-                    <th className="text-right px-4 py-3 text-xs uppercase tracking-[0.12em]" style={{ color: "var(--color-fg-tertiary)" }}>Fee</th>
+                    <th className="text-right px-4 py-3 text-xs uppercase tracking-[0.12em]" style={{ color: "var(--color-fg-tertiary)" }}>Estimated Delivery</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -70,31 +72,22 @@ export default async function DeliveryPolicyPage() {
                       }}
                     >
                       <td className="px-4 py-3" style={{ color: "var(--color-fg)" }}>{z.name}</td>
-                      <td className="px-4 py-3" style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-mono)" }}>{z.days} days</td>
-                      <td className="px-4 py-3 text-right" style={{ color: "var(--color-gold-400)", fontFamily: "var(--font-mono)" }}>{fmtLKR(z.fee)}</td>
+                      <td className="px-4 py-3 text-right" style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-mono)" }}>{z.days} business days</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <p className="text-xs mt-3 italic" style={{ color: "var(--color-fg-tertiary)" }}>
-              Orders over {fmtLKR(freeThreshold)} qualify for free standard delivery island-wide.
-            </p>
-          </div>
-
-          <div style={{ height: 1, backgroundColor: "var(--color-card-border)" }} />
-
-          {/* Express */}
-          <div>
-            <h2 className="text-xl mb-4" style={{ fontFamily: "var(--font-display)", fontWeight: 400, color: "var(--color-fg)" }}>
-              Express Delivery
-            </h2>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--color-fg-muted)" }}>
-              Express delivery is available island-wide for a flat fee of{" "}
-              <strong style={{ color: "var(--color-fg)", fontFamily: "var(--font-mono)" }}>LKR 1,200</strong>.
-              Express orders placed before 12:00 PM (SLT) on business days are dispatched same day and typically
-              arrive within 1–2 business days.
-            </p>
+            <div className="mt-3 space-y-1">
+              <p className="text-xs italic" style={{ color: "var(--color-fg-tertiary)" }}>
+                Delivery fees are calculated at checkout based on your delivery location.
+              </p>
+              <p className="text-xs italic" style={{ color: "var(--color-fg-tertiary)" }}>
+                Orders over{" "}
+                <span style={{ fontFamily: "var(--font-mono)" }}>{fmtLKR(freeThreshold)}</span>{" "}
+                qualify for free standard delivery island-wide.
+              </p>
+            </div>
           </div>
 
           <div style={{ height: 1, backgroundColor: "var(--color-card-border)" }} />
@@ -106,11 +99,12 @@ export default async function DeliveryPolicyPage() {
             </h2>
             <ul className="space-y-3 text-sm leading-relaxed" style={{ color: "var(--color-fg-muted)" }}>
               {[
-                "All deliveries are made Monday to Friday. Orders placed on weekends or public holidays are processed on the next business day.",
-                "Delivery times are estimates and are not guaranteed. Auréx is not liable for delays caused by courier services or events beyond our control.",
-                "You will receive an order confirmation email once payment is verified. Tracking updates are provided by the courier.",
-                "If a delivery attempt is unsuccessful, the courier will leave a notification. Please contact us if your parcel is not received within the estimated timeframe.",
-                "Shipping fees are non-refundable unless the return is due to a defect or error on our part.",
+                "Orders are processed Monday to Friday. Orders placed on weekends or public holidays will be processed on the next business day.",
+                "Delivery timelines are estimates and may vary depending on courier operations, weather conditions, public holidays, or regional accessibility.",
+                "Once your payment is verified, you will receive an order confirmation email. Tracking details will be provided once your order has been dispatched.",
+                "If a delivery attempt is unsuccessful, the courier may contact you directly or leave a notification. Please contact us if your parcel has not arrived within the estimated delivery timeframe.",
+                "Shipping fees are non-refundable unless the return is due to a defective or incorrect item.",
+                "Please ensure your delivery address and contact number are accurate when placing your order to avoid delays.",
               ].map((item) => (
                 <li key={item} className="flex gap-3">
                   <span style={{ color: "var(--color-gold-400)", flexShrink: 0 }}>·</span>
@@ -127,26 +121,40 @@ export default async function DeliveryPolicyPage() {
             className="rounded-sm p-6"
             style={{ backgroundColor: "var(--color-dark-forest)", border: "1px solid var(--color-card-border)" }}
           >
-            <p className="text-xs tracking-[0.16em] uppercase mb-2" style={{ color: "var(--color-gold-200)" }}>
+            <p className="text-xs tracking-[0.16em] uppercase mb-3" style={{ color: "var(--color-gold-200)", fontFamily: "var(--font-body)" }}>
               Questions about your delivery?
             </p>
-            <p className="text-sm" style={{ color: "var(--color-fg-muted)" }}>
-              Contact us at{" "}
-              <a
-                href="mailto:hello@wearaurex.com"
-                style={{ color: "var(--color-gold-400)", textDecoration: "underline", textUnderlineOffset: 3 }}
-              >
-                hello@wearaurex.com
-              </a>{" "}
-              or use our{" "}
-              <a
-                href="/track-order"
-                style={{ color: "var(--color-gold-400)", textDecoration: "underline", textUnderlineOffset: 3 }}
-              >
-                order tracking
-              </a>{" "}
-              page.
-            </p>
+            <div className="space-y-2 text-sm" style={{ color: "var(--color-fg-muted)" }}>
+              <p>
+                Email us at{" "}
+                <a
+                  href="mailto:hello@wearaurex.com"
+                  style={{ color: "var(--color-gold-400)", textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  hello@wearaurex.com
+                </a>{" "}
+                or use our{" "}
+                <Link
+                  href="/track-order"
+                  style={{ color: "var(--color-gold-400)", textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  order tracking page
+                </Link>
+                .
+              </p>
+              <p>
+                For urgent delivery assistance, reach us on{" "}
+                <a
+                  href={WA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "var(--color-gold-400)", textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  WhatsApp at +94 71 766 0101
+                </a>{" "}
+                during business hours.
+              </p>
+            </div>
           </div>
 
         </div>
