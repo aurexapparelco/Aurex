@@ -39,6 +39,17 @@ async function getNewArrivals() {
 
 type FeaturedProduct = { id: string; name: string; price: number };
 
+async function getHeroProduct(id: string): Promise<FeaturedProduct | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("id, name, price")
+    .eq("id", id)
+    .eq("listed", true)
+    .single();
+  return data as FeaturedProduct | null;
+}
+
 export default async function HomePage() {
   const [featured, newArrivals, homeContent] = await Promise.all([
     getFeaturedProducts(),
@@ -47,7 +58,11 @@ export default async function HomePage() {
   ]);
 
   const { hero, featureStrip, collectionCards } = homeContent;
-  const firstFeatured = featured[0] as unknown as FeaturedProduct | undefined;
+
+  const firstFeatured: FeaturedProduct | undefined =
+    hero.heroProductId
+      ? (await getHeroProduct(hero.heroProductId)) ?? (featured[0] as unknown as FeaturedProduct)
+      : (featured[0] as unknown as FeaturedProduct);
 
   return (
     <>
@@ -167,7 +182,7 @@ export default async function HomePage() {
                     fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase",
                     color: "var(--color-fg-tertiary)", fontFamily: "var(--font-body)",
                   }}>
-                    Cut &amp; sewn in Colombo
+                    {hero.locationTagline}
                   </span>
                 </div>
               </div>
@@ -264,21 +279,53 @@ export default async function HomePage() {
             borderBottom: "1px solid var(--color-card-border)",
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              {featureStrip.features.map(({ icon, label }) => (
-                <div key={label} className="flex flex-col items-center gap-2">
-                  <span
-                    style={{ color: "var(--color-gold-400)", fontSize: "16px" }}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div className="grid grid-cols-2 md:grid-cols-4">
+              {featureStrip.features.map(({ icon, iconUrl, label, subtitle }, i) => (
+                <div
+                  key={label}
+                  className={`flex items-center gap-4 px-4 sm:px-6 py-4${i < 2 ? " border-b md:border-b-0" : ""}`}
+                  style={{
+                    borderLeft: i === 1 || i === 3 ? "1px solid var(--color-card-border)" : undefined,
+                    borderColor: "var(--color-card-border)",
+                  }}
+                >
+                  {/* Icon circle */}
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      border: "1px solid var(--color-gold-700)",
+                      backgroundColor: "rgba(110,79,24,0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    {icon}
-                  </span>
-                  <span
-                    className="text-xs tracking-wide"
-                    style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
-                  >
-                    {label}
-                  </span>
+                    {iconUrl ? (
+                      <Image src={iconUrl} alt="" width={22} height={22} className="object-contain" unoptimized />
+                    ) : (
+                      <span style={{ color: "var(--color-gold-400)", fontSize: 16 }}>{icon}</span>
+                    )}
+                  </div>
+
+                  {/* Text */}
+                  <div style={{ minWidth: 0 }}>
+                    <p
+                      className="text-sm font-semibold leading-tight"
+                      style={{ color: "var(--color-fg)", fontFamily: "var(--font-body)", margin: 0 }}
+                    >
+                      {label}
+                    </p>
+                    <p
+                      className="text-xs leading-snug mt-0.5"
+                      style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
+                    >
+                      {subtitle}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -433,7 +480,7 @@ export default async function HomePage() {
             className="text-xs tracking-[0.22em] uppercase mb-6"
             style={{ color: "var(--color-gold-200)" }}
           >
-            Our Promise
+            Our Story
           </p>
           <h2
             className="text-3xl sm:text-5xl leading-tight mb-8"
@@ -444,18 +491,18 @@ export default async function HomePage() {
               letterSpacing: "-0.01em",
             }}
           >
-            Not fast fashion.{" "}
+            Built for the everyday.{" "}
             <em className="not-italic" style={{ color: "var(--color-gold-400)" }}>
-              Considered craft.
+              Crafted for life.
             </em>
           </h2>
           <p
             className="text-base leading-relaxed mb-10"
             style={{ color: "var(--color-fg-muted)" }}
           >
-            Every Auréx piece is cut and sewn in our Colombo atelier, using
-            200GSM supima cotton that holds its form wash after wash. We make
-            fewer things, better.
+            We started Auréx with a simple belief — the clothing worn every day
+            deserves the same care, refinement, and intention as the pieces reserved
+            for special occasions. Designed for everyday wear. Crafted in Sri Lanka.
           </p>
           <Link
             href="/about"
@@ -466,7 +513,7 @@ export default async function HomePage() {
               fontFamily: "var(--font-body)",
             }}
           >
-            Our Story
+            Discover Our Story
           </Link>
         </div>
       </section>

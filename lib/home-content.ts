@@ -1,11 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 
-export interface HeroStat {
-  value: string;
-  unit: string;
-  label: string;
-}
-
 export interface HeroContent {
   visible: boolean;
   eyebrow: string;
@@ -14,13 +8,16 @@ export interface HeroContent {
   subtext: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
-  stats: HeroStat[];
   imageUrl: string;
+  locationTagline: string;
+  heroProductId: string;
 }
 
 export interface FeatureItem {
-  icon: string;
+  icon: string;      // emoji/character fallback
+  iconUrl: string;   // PNG upload URL (used when set)
   label: string;
+  subtitle: string;
 }
 
 export interface FeatureStripContent {
@@ -57,20 +54,17 @@ const DEFAULTS: HomeContent = {
       "Premium-grade tees engineered for Sri Lanka's climate. 200GSM supima cotton, tailored silhouettes.",
     primaryCta: { label: "Shop Collection", href: "/shop" },
     secondaryCta: { label: "Premium Collection", href: "/shop?type=Premium" },
-    stats: [
-      { value: "200", unit: "GSM", label: "Premium Cotton" },
-      { value: "5", unit: "Colors", label: "Per Drop" },
-      { value: "100%", unit: "LK", label: "Made in Sri Lanka" },
-    ],
     imageUrl: "",
+    locationTagline: "Cut & sewn in Colombo",
+    heroProductId: "",
   },
   featureStrip: {
     visible: true,
     features: [
-      { icon: "✦", label: "Premium 200GSM Supima" },
-      { icon: "◈", label: "Structured Tailored Fit" },
-      { icon: "⊹", label: "Free Returns · 30 Days" },
-      { icon: "◻", label: "Made in Sri Lanka" },
+      { icon: "◈", iconUrl: "", label: "Thoughtfully Crafted", subtitle: "Carefully designed with attention to fit, comfort, and long-term wearability." },
+      { icon: "✦", iconUrl: "", label: "Designed for Everyday Wear", subtitle: "Refined essentials made to move naturally through everyday life." },
+      { icon: "⊹", iconUrl: "", label: "Minimal by Intention", subtitle: "Timeless design without excessive branding or trend-driven styling." },
+      { icon: "◻", iconUrl: "", label: "Crafted in Sri Lanka", subtitle: "Carefully produced with a focus on quality, detail, and modern craftsmanship." },
     ],
   },
   collectionCards: {

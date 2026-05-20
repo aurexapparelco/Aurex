@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { HomeContent, HeroStat, FeatureItem, CollectionCard } from "@/lib/home-content";
+import type { HomeContent, FeatureItem, CollectionCard } from "@/lib/home-content";
 import ImageUpload from "@/components/admin/ImageUpload";
+
+type ProductOption = { id: string; name: string };
 
 interface Props {
   initial: HomeContent;
@@ -14,6 +16,20 @@ export default function HomeContentForm({ initial }: Props) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [products, setProducts] = useState<ProductOption[]>([]);
+
+  useEffect(() => {
+    const sb = createClient();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (sb as unknown as any)
+      .from("products")
+      .select("id, name")
+      .eq("listed", true)
+      .order("name")
+      .then(({ data }: { data: ProductOption[] | null }) => {
+        if (data) setProducts(data);
+      });
+  }, []);
 
   // ── Hero helpers ────────────────────────────────────────────────────────────
   function setHero<K extends keyof HomeContent["hero"]>(
@@ -29,14 +45,6 @@ export default function HomeContentForm({ initial }: Props) {
       ...f,
       hero: { ...f.hero, [which]: { ...f.hero[which], [field]: value } },
     }));
-    setSaved(false);
-  }
-
-  function setHeroStat(i: number, field: keyof HeroStat, value: string) {
-    const stats = form.hero.stats.map((s, idx) =>
-      idx === i ? { ...s, [field]: value } : s,
-    );
-    setForm((f) => ({ ...f, hero: { ...f.hero, stats } }));
     setSaved(false);
   }
 
@@ -149,6 +157,31 @@ export default function HomeContentForm({ initial }: Props) {
             />
           </Field>
 
+          <Field label="Location tagline (bottom of hero)" style={lbl}>
+            <input
+              style={inp}
+              value={form.hero.locationTagline}
+              onChange={(e) => setHero("locationTagline", e.target.value)}
+              placeholder="e.g. Cut & sewn in Colombo"
+            />
+          </Field>
+
+          <Field label="Hero product card" style={lbl}>
+            <select
+              style={{ ...inp, cursor: "pointer" }}
+              value={form.hero.heroProductId}
+              onChange={(e) => setHero("heroProductId", e.target.value)}
+            >
+              <option value="">— Auto (first Featured product) —</option>
+              {products.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+            <p className="text-xs mt-1" style={{ color: "var(--color-fg-tertiary)" }}>
+              The product shown in the overlay card on the hero image. Defaults to the first Featured-tagged product if unset.
+            </p>
+          </Field>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p style={{ ...lbl, marginBottom: "8px" }}>Primary CTA</p>
@@ -186,33 +219,6 @@ export default function HomeContentForm({ initial }: Props) {
             </div>
           </div>
 
-          <div>
-            <p style={{ ...lbl, marginBottom: "8px" }}>Stats</p>
-            <div className="space-y-2">
-              {form.hero.stats.map((stat, i) => (
-                <div key={i} className="grid grid-cols-3 gap-2">
-                  <input
-                    style={inp}
-                    placeholder="Value"
-                    value={stat.value}
-                    onChange={(e) => setHeroStat(i, "value", e.target.value)}
-                  />
-                  <input
-                    style={inp}
-                    placeholder="Unit"
-                    value={stat.unit}
-                    onChange={(e) => setHeroStat(i, "unit", e.target.value)}
-                  />
-                  <input
-                    style={inp}
-                    placeholder="Label"
-                    value={stat.label}
-                    onChange={(e) => setHeroStat(i, "label", e.target.value)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
 
           <div>
             <ImageUpload
@@ -239,23 +245,59 @@ export default function HomeContentForm({ initial }: Props) {
           }
         />
 
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 space-y-4">
           {form.featureStrip.features.map((feat, i) => (
-            <div key={i} className="grid grid-cols-[80px_1fr] gap-3">
+            <div
+              key={i}
+              className="p-4 rounded-sm space-y-3"
+              style={{ backgroundColor: "var(--color-dark-forest)", border: "1px solid var(--color-card-border)" }}
+            >
+              <p className="text-xs tracking-widest uppercase" style={{ color: "var(--color-gold-200)" }}>
+                Feature {i + 1}
+              </p>
+
+              {/* Icon upload */}
               <div>
-                <label style={lbl}>Icon</label>
+                <ImageUpload
+                  images={feat.iconUrl ? [feat.iconUrl] : []}
+                  onChange={(urls) => setFeature(i, "iconUrl", urls[urls.length - 1] ?? "")}
+                  uploadEndpoint="/api/upload/feature-icon"
+                  urlKey="icon"
+                  maxImages={1}
+                  label="Icon PNG"
+                />
+                <p className="text-xs mt-1" style={{ color: "var(--color-fg-tertiary)" }}>
+                  Recommended: 80×80px PNG with transparent background. Max 500KB.
+                </p>
+              </div>
+
+              {/* Emoji fallback */}
+              <div>
+                <label style={lbl}>Emoji fallback (shown if no PNG uploaded)</label>
                 <input
-                  style={{ ...inp, textAlign: "center", fontFamily: "var(--font-mono)" }}
+                  style={{ ...inp, width: 64, textAlign: "center", fontFamily: "var(--font-mono)" }}
                   value={feat.icon}
                   onChange={(e) => setFeature(i, "icon", e.target.value)}
                 />
               </div>
+
+              {/* Label */}
               <div>
                 <label style={lbl}>Label</label>
                 <input
                   style={inp}
                   value={feat.label}
                   onChange={(e) => setFeature(i, "label", e.target.value)}
+                />
+              </div>
+
+              {/* Subtitle */}
+              <div>
+                <label style={lbl}>Subtitle</label>
+                <input
+                  style={inp}
+                  value={feat.subtitle}
+                  onChange={(e) => setFeature(i, "subtitle", e.target.value)}
                 />
               </div>
             </div>
