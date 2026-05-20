@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AddToCartButton from "@/components/storefront/AddToCartButton";
+import ProductGallery from "@/components/storefront/ProductGallery";
 import { fmtLKR } from "@/lib/constants";
 import type { Metadata } from "next";
 import type { ProductWithVariantsAndInventory } from "@/types/supabase-helpers";
@@ -39,7 +40,6 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const variants = product.product_variants ?? [];
-  const primaryVariant = variants[0];
 
   return (
     <div style={{ backgroundColor: "var(--color-void)" }}>
@@ -63,57 +63,10 @@ export default async function ProductPage({ params }: Props) {
 
         <div className="grid lg:grid-cols-2 gap-12 xl:gap-20">
           {/* Image gallery */}
-          <div className="space-y-3">
-            <div
-              className="aspect-4/5 rounded-sm overflow-hidden"
-              style={{
-                backgroundColor: "var(--color-forest)",
-                border: "1px solid var(--color-card-border)",
-              }}
-            >
-              {primaryVariant?.images?.[0] ? (
-                <img
-                  src={primaryVariant.images[0]}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span
-                    className="text-6xl"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      color: "var(--color-fg-disabled)",
-                    }}
-                  >
-                    Ax
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnail row */}
-            {primaryVariant?.images && primaryVariant.images.length > 1 && (
-              <div className="flex gap-2">
-                {primaryVariant.images.slice(0, 4).map((img, i) => (
-                  <div
-                    key={i}
-                    className="w-20 aspect-4/5 rounded-sm overflow-hidden"
-                    style={{
-                      backgroundColor: "var(--color-forest)",
-                      border: "1px solid var(--color-card-border)",
-                    }}
-                  >
-                    <img
-                      src={img}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductGallery
+            variants={variants.map((v) => ({ id: v.id, images: v.images }))}
+            productName={product.name}
+          />
 
           {/* Product info + Add to cart */}
           <div>

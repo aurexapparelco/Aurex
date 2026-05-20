@@ -59,7 +59,11 @@ export default function AddToCartButton({ product, variants }: Props) {
             {variants.map((v) => (
               <button
                 key={v.id}
-                onClick={() => { setSelectedVariant(v); setSelectedSize(""); }}
+                onClick={() => {
+                  setSelectedVariant(v);
+                  setSelectedSize("");
+                  window.dispatchEvent(new CustomEvent("aurex_variant_changed", { detail: v.id }));
+                }}
                 title={v.color}
                 className="w-8 h-8 rounded-full transition-all"
                 style={{
