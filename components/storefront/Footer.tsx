@@ -98,9 +98,13 @@ export default async function Footer() {
                   className="text-xs leading-relaxed mt-4 max-w-55"
                   style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
                 >
-                  Premium Polos &amp; Menswear in Sri Lanka 🇱🇰<br />
-                  Minimal plain polos, signature embroidered styles &amp; everyday essentials.<br />
-                  Comfortable, modern &amp; made for confidence.
+                  Refined menswear designed for everyday wear.
+                </p>
+                <p
+                  className="text-xs leading-relaxed mt-3 max-w-55"
+                  style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
+                >
+                  Minimal essentials crafted with comfort, versatility, and quiet confidence in mind.
                 </p>
 
                 {socialLinks.length > 0 && (

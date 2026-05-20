@@ -6,7 +6,7 @@ import type { ProductType } from "@/types/database.types";
 
 export const metadata: Metadata = {
   title: "Shop — All Products",
-  description: "Browse Auréx's full collection of premium essentials.",
+  description: "Browse Auréx's full collection of premium menswear.",
 };
 
 interface Props {
@@ -26,16 +26,18 @@ async function getProducts(type?: string, tag?: string, sort?: string) {
   const supabase = await createClient();
   let query = supabase
     .from("products")
-    .select(`*, product_types(id, name), product_variants(id, color, hex, images, inventory(variant_id, size, qty))`)
+    .select(
+      `*, product_types(id, name), product_variants(id, color, hex, images, inventory(variant_id, size, qty))`,
+    )
     .eq("listed", true);
 
   if (type) {
     // Resolve type name → id, then filter
-    const { data: typeRow } = await supabase
+    const { data: typeRow } = (await supabase
       .from("product_types")
       .select("id")
       .eq("name", type)
-      .single() as unknown as { data: { id: string } | null };
+      .single()) as unknown as { data: { id: string } | null };
     if (typeRow) {
       query = query.eq("type_id", typeRow.id);
     }
@@ -81,7 +83,10 @@ export default async function ShopPage({ searchParams }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p
             className="text-xs tracking-[0.2em] uppercase mb-3"
-            style={{ color: "var(--color-gold-200)", fontFamily: "var(--font-body)" }}
+            style={{
+              color: "var(--color-gold-200)",
+              fontFamily: "var(--font-body)",
+            }}
           >
             Auréx
           </p>
@@ -98,7 +103,10 @@ export default async function ShopPage({ searchParams }: Props) {
           </h1>
           <p
             className="mt-2 text-sm"
-            style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-mono)" }}
+            style={{
+              color: "var(--color-fg-muted)",
+              fontFamily: "var(--font-mono)",
+            }}
           >
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>
@@ -117,18 +125,27 @@ export default async function ShopPage({ searchParams }: Props) {
           <div className="py-24 text-center">
             <p
               className="text-lg mb-2"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg-muted)" }}
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 300,
+                color: "var(--color-fg-muted)",
+              }}
             >
               No products found
             </p>
-            <p className="text-sm" style={{ color: "var(--color-fg-tertiary)" }}>
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-fg-tertiary)" }}
+            >
               Try adjusting your filters
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
             {/* @ts-expect-error — Supabase nested type */}
-            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         )}
       </div>

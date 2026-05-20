@@ -26,7 +26,11 @@ export default function CartPageClient() {
           </p>
           <h1
             className="text-4xl"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 300,
+              color: "var(--color-fg)",
+            }}
           >
             Shopping Cart
           </h1>
@@ -38,9 +42,20 @@ export default function CartPageClient() {
           <div className="text-center py-24">
             <div
               className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full"
-              style={{ backgroundColor: "var(--color-dark-forest)", border: "1px solid var(--color-card-border)" }}
+              style={{
+                backgroundColor: "var(--color-dark-forest)",
+                border: "1px solid var(--color-card-border)",
+              }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ color: "var(--color-fg-tertiary)" }}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                style={{ color: "var(--color-fg-tertiary)" }}
+              >
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 01-8 0" />
@@ -48,17 +63,27 @@ export default function CartPageClient() {
             </div>
             <h2
               className="text-2xl mb-3"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 300,
+                color: "var(--color-fg)",
+              }}
             >
               Your cart is empty
             </h2>
-            <p className="text-sm mb-8" style={{ color: "var(--color-fg-muted)" }}>
-              Discover our collection of premium essentials.
+            <p
+              className="text-sm mb-8"
+              style={{ color: "var(--color-fg-muted)" }}
+            >
+              Discover our collection of premium menswear.
             </p>
             <Link
               href="/shop"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded text-sm font-medium tracking-wide"
-              style={{ backgroundColor: "var(--color-gold-400)", color: "var(--color-void)" }}
+              style={{
+                backgroundColor: "var(--color-gold-400)",
+                color: "var(--color-void)",
+              }}
             >
               Continue Shopping
             </Link>
@@ -71,7 +96,10 @@ export default function CartPageClient() {
                 <thead>
                   <tr
                     className="border-b text-xs tracking-[0.12em] uppercase text-left"
-                    style={{ borderColor: "var(--color-card-border)", color: "var(--color-fg-tertiary)" }}
+                    style={{
+                      borderColor: "var(--color-card-border)",
+                      color: "var(--color-fg-tertiary)",
+                    }}
                   >
                     <th className="pb-4 font-normal">Product</th>
                     <th className="pb-4 font-normal text-center">Qty</th>
@@ -89,23 +117,42 @@ export default function CartPageClient() {
                         <div className="flex gap-4">
                           <div
                             className="w-16 h-20 flex-shrink-0 rounded overflow-hidden"
-                            style={{ backgroundColor: "var(--color-forest)", border: "1px solid var(--color-card-border)" }}
+                            style={{
+                              backgroundColor: "var(--color-forest)",
+                              border: "1px solid var(--color-card-border)",
+                            }}
                           >
-                            {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
+                            {item.image && (
+                              <img
+                                src={item.image}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
                           <div>
                             <p
                               className="text-sm font-medium mb-1"
-                              style={{ color: "var(--color-fg)", fontFamily: "var(--font-display)", fontWeight: 400 }}
+                              style={{
+                                color: "var(--color-fg)",
+                                fontFamily: "var(--font-display)",
+                                fontWeight: 400,
+                              }}
                             >
                               {item.productName}
                             </p>
-                            <p className="text-xs" style={{ color: "var(--color-fg-muted)" }}>
+                            <p
+                              className="text-xs"
+                              style={{ color: "var(--color-fg-muted)" }}
+                            >
                               {item.color} · {item.size}
                             </p>
                             <p
                               className="text-xs mt-1"
-                              style={{ color: "var(--color-fg-tertiary)", fontFamily: "var(--font-mono)" }}
+                              style={{
+                                color: "var(--color-fg-tertiary)",
+                                fontFamily: "var(--font-mono)",
+                              }}
                             >
                               {fmtLKR(item.price)} each
                             </p>
@@ -122,22 +169,35 @@ export default function CartPageClient() {
                       <td className="py-6">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => updateCartQty(item.key, item.qty - 1)}
+                            onClick={() =>
+                              updateCartQty(item.key, item.qty - 1)
+                            }
                             className="w-7 h-7 flex items-center justify-center rounded border"
-                            style={{ borderColor: "var(--color-card-border)", color: "var(--color-fg-muted)" }}
+                            style={{
+                              borderColor: "var(--color-card-border)",
+                              color: "var(--color-fg-muted)",
+                            }}
                           >
                             −
                           </button>
                           <span
                             className="w-8 text-center text-sm"
-                            style={{ fontFamily: "var(--font-mono)", color: "var(--color-fg)" }}
+                            style={{
+                              fontFamily: "var(--font-mono)",
+                              color: "var(--color-fg)",
+                            }}
                           >
                             {item.qty}
                           </span>
                           <button
-                            onClick={() => updateCartQty(item.key, item.qty + 1)}
+                            onClick={() =>
+                              updateCartQty(item.key, item.qty + 1)
+                            }
                             className="w-7 h-7 flex items-center justify-center rounded border"
-                            style={{ borderColor: "var(--color-card-border)", color: "var(--color-fg-muted)" }}
+                            style={{
+                              borderColor: "var(--color-card-border)",
+                              color: "var(--color-fg-muted)",
+                            }}
                           >
                             +
                           </button>
@@ -146,7 +206,10 @@ export default function CartPageClient() {
                       <td className="py-6 text-right">
                         <span
                           className="text-sm"
-                          style={{ color: "var(--color-gold-400)", fontFamily: "var(--font-mono)" }}
+                          style={{
+                            color: "var(--color-gold-400)",
+                            fontFamily: "var(--font-mono)",
+                          }}
                         >
                           {fmtLKR(item.price * item.qty)}
                         </span>
@@ -168,21 +231,39 @@ export default function CartPageClient() {
               >
                 <h2
                   className="text-lg mb-5"
-                  style={{ fontFamily: "var(--font-display)", fontWeight: 300, color: "var(--color-fg)" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 300,
+                    color: "var(--color-fg)",
+                  }}
                 >
                   Order Summary
                 </h2>
 
                 <div className="space-y-3 mb-5">
                   <div className="flex justify-between text-sm">
-                    <span style={{ color: "var(--color-fg-muted)" }}>Subtotal</span>
-                    <span style={{ fontFamily: "var(--font-mono)", color: "var(--color-fg)" }}>
+                    <span style={{ color: "var(--color-fg-muted)" }}>
+                      Subtotal
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        color: "var(--color-fg)",
+                      }}
+                    >
                       {fmtLKR(subtotal)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span style={{ color: "var(--color-fg-muted)" }}>Shipping</span>
-                    <span style={{ color: "var(--color-fg-tertiary)", fontSize: "12px" }}>
+                    <span style={{ color: "var(--color-fg-muted)" }}>
+                      Shipping
+                    </span>
+                    <span
+                      style={{
+                        color: "var(--color-fg-tertiary)",
+                        fontSize: "12px",
+                      }}
+                    >
                       {subtotal >= 15000 ? "Free" : "Calculated at checkout"}
                     </span>
                   </div>
@@ -192,12 +273,18 @@ export default function CartPageClient() {
                   className="flex justify-between py-4 border-t mb-5"
                   style={{ borderColor: "var(--color-card-border)" }}
                 >
-                  <span className="text-sm font-medium" style={{ color: "var(--color-fg)" }}>
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: "var(--color-fg)" }}
+                  >
                     Total
                   </span>
                   <span
                     className="text-base"
-                    style={{ fontFamily: "var(--font-mono)", color: "var(--color-gold-400)" }}
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--color-gold-400)",
+                    }}
                   >
                     {fmtLKR(subtotal)}
                   </span>

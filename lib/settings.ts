@@ -126,7 +126,7 @@ export function getDefaults(): AppSettings {
       businessOpenTime: "09:00",
       businessCloseTime: "18:00",
       holidayNote: "Responses may be delayed on public holidays in Sri Lanka.",
-      brandTagline: "Dressed for Every Chapter",
+      brandTagline: "Premium Menswear",
       copyrightSuffix: "Auréx. All rights reserved.",
     },
   };

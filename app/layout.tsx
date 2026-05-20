@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Auréx — Premium Essentials",
+    default: "Auréx — Premium Menswear",
     template: "%s | Auréx",
   },
   description:
@@ -19,7 +19,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Anti-FOUC: apply saved theme class before first paint */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('aurex_theme');if(t!=='dark')document.documentElement.classList.add('light');}catch(e){}})();` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('aurex_theme');if(t!=='dark')document.documentElement.classList.add('light');}catch(e){}})();`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
